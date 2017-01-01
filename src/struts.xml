@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+    <constant name="struts.enable.DynamicMethodInvocation" value="true" />
+    <constant name="struts.devModel" value="true"/>
+    <constant name="struts.i18n.encoding" value="UTF-8" />
+
+	<!--需要将struts-default改为-->  
+    <package name="Control" extends="json-default">
+        
+        <action name="login" class="Control.AdminHelper" method="login">
+            <!--返回值类型设置为json,不设置返回页面-->  
+            <result type="json"/>
+        </action>
+        
+        <action name="addAdmin" class="Control.AdminHelper" method="addAdmin">
+            <result type="json"/>
+        </action>        
+        
+        <action name="changePassword" class="Control.AdminHelper" method="changePassword">
+            <result type="json"/>
+        </action>
+        
+    </package>  
+</struts>  
