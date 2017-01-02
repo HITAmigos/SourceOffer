@@ -16,7 +16,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class VideoCrawler {
+import MySQL.hibernate.Video;
+import MySQL.specificTable.VideoTable;
+
+public class VideoCrawler implements Runnable{
 
   public static final String DB_URL =
       "jdbc:mysql://localhost:3306/media?useUnicode=true&characterEncoding=utf8&&useSSL=false";
@@ -192,24 +195,18 @@ public class VideoCrawler {
       Class.forName("com.mysql.jdbc.Driver").newInstance();
       Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
       for (Map.Entry<String, String> mapping : videoLinkMap.entrySet()) {
-        PreparedStatement pStatement =
-            connection.prepareStatement("insert into video(title,link) values(?,?)");
-        pStatement.setString(1, mapping.getKey());
-        pStatement.setString(2, mapping.getValue());
-        pStatement.executeUpdate();
-        pStatement.close();
+        Video video = new Video();
+        video.setTitle(mapping.getKey());
+        video.setLink(mapping.getValue());
+        VideoTable.addVideo(video);
       }
-      connection.close();
-    } catch (SQLException e) {
-      e.printStackTrace();
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
-
-  public static void main(String[] args) {
-    VideoCrawler videoLinkGrab = new VideoCrawler();
-    videoLinkGrab.saveData("http://www.80s.la/movie/list/-2015----p");
+  @Override
+  public void run() {
+    VideoCrawler.saveData("http://www.80s.la/movie/list/-2015----p");
   }
 
 }

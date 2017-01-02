@@ -38,7 +38,7 @@ public class MusicTable extends Table {
     List<Music> musicSet = new ArrayList<Music>();
     try {
       tran = session.beginTransaction();
-      List<Music> allmusic = session.createQuery("FROM music").list();
+      List<Music> allmusic = session.createQuery("FROM Music").list();
       Music tmp = null;
       for (Iterator<Music> iterator = allmusic.iterator(); iterator.hasNext();) {
         tmp = (Music) iterator.next();
@@ -133,5 +133,13 @@ public class MusicTable extends Table {
       }
     }
     return result;
+  }
+
+  public static boolean isExist(String musicTitle) {
+    if (getMusic(musicTitle).size()==0) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }
