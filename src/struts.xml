@@ -7,11 +7,14 @@
     <constant name="struts.devModel" value="true"/>
     <constant name="struts.i18n.encoding" value="UTF-8" />
 
-	<!--需要将struts-default改为-->  
-    <package name="Control" extends="json-default">
+	<!--需要将struts-default改为-->
+    <package name="Control" namespace="/" extends="json-default">
+        <result-types>
+			<result-type name="json" class="org.apache.struts2.json.JSONResult"/>
+		</result-types>
         
         <action name="login" class="Control.AdminHelper" method="login">
-            <!--返回值类型设置为json,不设置返回页面-->  
+            <!--返回值类型设置为json,不设置返回页面-->
             <result type="json"/>
         </action>
         

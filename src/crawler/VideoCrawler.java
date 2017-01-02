@@ -29,7 +29,7 @@ public class VideoCrawler {
    * @param url 待检查URL
    * @return 状态
    */
-  public boolean checkUrl(String url) {
+  public static boolean checkUrl(String url) {
     Pattern pattern = Pattern.compile("http://www.80s.la/movie/list/-2015----p\\d*");
     Matcher matcher = pattern.matcher(url);
     if (matcher.find())
@@ -44,7 +44,7 @@ public class VideoCrawler {
    * @param url 页面链接
    * @return 状态
    */
-  public boolean isMoviePage(String url) {
+  public static boolean isMoviePage(String url) {
     Pattern pattern = Pattern.compile("http://www.80s.la/movie/\\d+");
     Matcher matcher = pattern.matcher(url);
     if (matcher.find())
@@ -63,7 +63,7 @@ public class VideoCrawler {
    * 
    * @return 返回所有抓取到的视频下载链接集合
    */
-  private Map<String, String> crawlLinks(String oldLinkHost, Map<String, Boolean> oldMap) {
+  private static Map<String, String> crawlLinks(String oldLinkHost, Map<String, Boolean> oldMap) {
     Map<String, Boolean> newMap = new LinkedHashMap<String, Boolean>(); // 每次循环获取到的新链接
     Map<String, String> videoLinkMap = new LinkedHashMap<String, String>(); // 视频下载链接
     String oldLink = "";
@@ -173,7 +173,7 @@ public class VideoCrawler {
    * @param baseUrl 爬虫起点
    * @return null
    */
-  public void saveData(String baseUrl) {
+  public static void saveData(String baseUrl) {
     Map<String, Boolean> oldMap = new LinkedHashMap<String, Boolean>(); // 存储链接-是否被遍历
 
     Map<String, String> videoLinkMap = new LinkedHashMap<String, String>(); // 视频下载链接
@@ -193,12 +193,11 @@ public class VideoCrawler {
       Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
       for (Map.Entry<String, String> mapping : videoLinkMap.entrySet()) {
         PreparedStatement pStatement =
-            connection.prepareStatement("insert into video(MovieName,MovieLink) values(?,?)");
+            connection.prepareStatement("insert into video(title,link) values(?,?)");
         pStatement.setString(1, mapping.getKey());
         pStatement.setString(2, mapping.getValue());
         pStatement.executeUpdate();
         pStatement.close();
-        // System.out.println(mapping.getKey() + " : " + mapping.getValue());
       }
       connection.close();
     } catch (SQLException e) {

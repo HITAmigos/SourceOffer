@@ -1,8 +1,8 @@
 <%@ page language="java"
 	import="java.io.*,java.sql.*,java.util.*,org.apache.http.*,
-	org.apache.http.client.*,org.apache.http.client.methods.HttpGet,
-	org.apache.http.impl.client.DefaultHttpClient,org.apache.http.util.EntityUtils,
-	net.sf.json.JSONObject"
+	org.apache.http.client.*,org.apache.http.client.methods.HttpGet.*,
+	org.apache.http.impl.client.DefaultHttpClient.*,org.apache.http.util.EntityUtils.*,
+	net.sf.json.JSONObject.*"
 	contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!doctype html>
 <html>
@@ -29,7 +29,7 @@
 			</div>
 		</div>
 		<div class="am-u-sm-10 login-am-center" style="margin:20% auto;">
-			<form class="am-form" action="loginAction">
+			<form class="am-form" action="login" method="get">
 				<fieldset>
 					<div class="am-form-group">
 						<input type="email" class="" id="doc-ipt-email-1" name="username" placeholder="用户名">	

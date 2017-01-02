@@ -60,7 +60,7 @@ public class AdminHelper extends ActionSupport
    * @param password
    * @return
    */
-  public void login(String adminname, String password) {
+  public void login() {
     try {
       /*
        * 如果不采用接口注入的方式的获取HttpServletRequest，HttpServletResponse的方式 HttpServletRequest
