@@ -4,27 +4,32 @@ import crawler.MusicCrawler;
 import crawler.VideoCrawler;
 
 public class Crawl {
-  public void crawlMusic() {
+
+  public String crawlMusic() {
+    System.out.print("music");
     MusicCrawler musicCrawler = new MusicCrawler();
     Thread musicThread = new Thread(musicCrawler);
     musicThread.start();
+    return "true";
   }
 
-  public void crawlVideo() {
+  public String crawlVideo() {
+
+    System.out.print("video");
     VideoCrawler videoCrawler = new VideoCrawler();
     Thread videoThread = new Thread(videoCrawler);
     videoThread.start();
+    return "true";
   }
-  
-  public static void main(String args[]){
-    Crawl c = new Crawl();
-    c.crawlMusic();
-    try {
-      Thread.sleep(10*1000);
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    System.out.println("main");
+
+  public String crawlAll() {
+    crawlMusic();
+    crawlVideo();
+    return "true";
+  }
+
+  public static void main(String args[]) {
+     Crawl c = new Crawl();
+     c.crawlMusic();
   }
 }

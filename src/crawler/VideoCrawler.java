@@ -17,9 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import MySQL.hibernate.Video;
+import MySQL.specificTable.MusicTable;
 import MySQL.specificTable.VideoTable;
 
-public class VideoCrawler implements Runnable{
+public class VideoCrawler implements Runnable {
 
   public static final String DB_URL =
       "jdbc:mysql://localhost:3306/media?useUnicode=true&characterEncoding=utf8&&useSSL=false";
@@ -111,7 +112,16 @@ public class VideoCrawler implements Runnable{
                 matcher = pattern.matcher(line);
                 if (matcher.find()) {
                   videoLinkMap.put(title, matcher.group(1));
-                  System.out.println("视频名称： " + title + "  ------  视频链接：" + matcher.group(1));
+                  System.out.print("视频名称： " + title + "  ------  视频链接：" + matcher.group(1));
+                  if (!VideoTable.isExist(title)) {
+                    Video video = new Video();
+                    video.setTitle(title);
+                    video.setLink(matcher.group(1));
+                    video.setType("mp4");
+                    if (VideoTable.addVideo(video)) {
+                      System.out.println("\ttrue");;
+                    }
+                  }
                   break; // 当前页面已经检测完毕
                 }
               }
@@ -191,21 +201,26 @@ public class VideoCrawler implements Runnable{
     oldMap.put(baseUrl, false);
     videoLinkMap = crawlLinks(oldLinkHost, oldMap);
     // 遍历，然后将数据保存在数据库中
-    try {
-      Class.forName("com.mysql.jdbc.Driver").newInstance();
-      Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
-      for (Map.Entry<String, String> mapping : videoLinkMap.entrySet()) {
-        Video video = new Video();
-        video.setTitle(mapping.getKey());
-        video.setLink(mapping.getValue());
-        VideoTable.addVideo(video);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    // try {
+    // Class.forName("com.mysql.jdbc.Driver").newInstance();
+    // Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
+    // for (Map.Entry<String, String> mapping : videoLinkMap.entrySet()) {
+    // Video video = new Video();
+    // video.setTitle(mapping.getKey());
+    // video.setLink(mapping.getValue());
+    // VideoTable.addVideo(video);
+    // }
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
   }
+
   @Override
   public void run() {
+    VideoCrawler.saveData("http://www.80s.la/movie/list/-2015----p");
+  }
+  
+  public static void main(String args[]) {
     VideoCrawler.saveData("http://www.80s.la/movie/list/-2015----p");
   }
 

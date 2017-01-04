@@ -52,6 +52,7 @@ public class SourceHelper extends ActionSupport
 
   private String musicTitle;
   private String videoTitle;
+  private String key;
 
   public String getMusicTitle() {
     return musicTitle;
@@ -69,6 +70,14 @@ public class SourceHelper extends ActionSupport
     this.videoTitle = videoTitle;
   }
 
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
+  }
+
   public void setServletRequest(HttpServletRequest request) {
     this.request = request;
   }
@@ -80,7 +89,7 @@ public class SourceHelper extends ActionSupport
   private ArrayList<String> split(String key) {
     ArrayList<String> resultSet = new ArrayList<String>();
     int keyLen = key.length();
-    for (int i = keyLen; i > 0; i--) {
+    for (int i = keyLen; i >= i / 2; i--) {
       for (int j = 0; j <= keyLen - i; j++) {
         resultSet.add(key.substring(j, j + i));
       }
@@ -88,23 +97,162 @@ public class SourceHelper extends ActionSupport
     return resultSet;
   }
 
-  public Music getMusic(String key) {
-    Music music = null;
-    return music;
-  }
-
-  public Video getVideo(String key) {
-    Video video = null;
-    return video;
-  }
-
-  public void getMusicSet() {
+  public void getMusicCount() {
     try {
       /*
        * 如果不采用接口注入的方式的获取HttpServletRequest，HttpServletResponse的方式 HttpServletRequest
        * request=ServletActionContext.getRequest(); HttpServletResponse
        * response=ServletActionContext.getResponse();
        */
+      this.response.setContentType("text/json;charset=utf-8");
+      this.response.setCharacterEncoding("UTF-8");
+
+      /*
+       * List<Map<String, String>> musicSet = new ArrayList<Map<String, String>>(); for (Music music
+       * : MusicTable.getMusicSet()) { Map<String, String> tmp = new LinkedHashMap<String,
+       * String>(); tmp.put(music.getTitle(), music.getLink()); musicSet.add(tmp); }
+       */
+
+      byte[] jsonBytes = new Long(MusicTable.getMusicCount()).toString().getBytes("utf-8");
+      response.setContentLength(jsonBytes.length);
+      response.getOutputStream().write(jsonBytes);
+      response.getOutputStream().flush();
+      response.getOutputStream().close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void getVideoCount() {
+
+  }
+
+  public void getMusic() {
+    try {
+      /*
+       * 如果不采用接口注入的方式的获取HttpServletRequest，HttpServletResponse的方式 HttpServletRequest
+       * request=ServletActionContext.getRequest(); HttpServletResponse
+       * response=ServletActionContext.getResponse();
+       */
+      this.response.setContentType("text/json;charset=utf-8");
+      this.response.setCharacterEncoding("UTF-8");
+
+      /*
+       * List<Map<String, String>> musicSet = new ArrayList<Map<String, String>>(); for (Music music
+       * : MusicTable.getMusicSet()) { Map<String, String> tmp = new LinkedHashMap<String,
+       * String>(); tmp.put(music.getTitle(), music.getLink()); musicSet.add(tmp); }
+       */
+
+      byte[] jsonBytes = new Long(VideoTable.getVideoCount()).toString().getBytes("utf-8");
+      response.setContentLength(jsonBytes.length);
+      response.getOutputStream().write(jsonBytes);
+      response.getOutputStream().flush();
+      response.getOutputStream().close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void getVideo() {
+    try {
+      /*
+       * 如果不采用接口注入的方式的获取HttpServletRequest，HttpServletResponse的方式 HttpServletRequest
+       * request=ServletActionContext.getRequest(); HttpServletResponse
+       * response=ServletActionContext.getResponse();
+       */
+      this.response.setContentType("text/json;charset=utf-8");
+      this.response.setCharacterEncoding("UTF-8");
+
+      /*
+       * List<Map<String, String>> musicSet = new ArrayList<Map<String, String>>(); for (Music music
+       * : MusicTable.getMusicSet()) { Map<String, String> tmp = new LinkedHashMap<String,
+       * String>(); tmp.put(music.getTitle(), music.getLink()); musicSet.add(tmp); }
+       */
+
+      List<String> videoSet = new ArrayList<String>();
+      videoSet.add("video");
+      for (String str : split(key)) {
+        for (Video video : VideoTable.fuzzySearchByTitle(str)) {
+          if (videoSet.contains(video.getLink())) {
+            continue;
+          }
+          videoSet.add(video.getTitle());
+          videoSet.add(video.getLink());
+        }
+      }
+
+      byte[] jsonBytes = videoSet.toString().getBytes("utf-8");
+      response.setContentLength(jsonBytes.length);
+      response.getOutputStream().write(jsonBytes);
+      response.getOutputStream().flush();
+      response.getOutputStream().close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void getAll() {
+    try {
+      /*
+       * 如果不采用接口注入的方式的获取HttpServletRequest，HttpServletResponse的方式 HttpServletRequest
+       * request=ServletActionContext.getRequest(); HttpServletResponse
+       * response=ServletActionContext.getResponse();
+       */
+      this.response.setContentType("text/json;charset=utf-8");
+      this.response.setCharacterEncoding("UTF-8");
+
+      /*
+       * List<Map<String, String>> musicSet = new ArrayList<Map<String, String>>(); for (Music music
+       * : MusicTable.getMusicSet()) { Map<String, String> tmp = new LinkedHashMap<String,
+       * String>(); tmp.put(music.getTitle(), music.getLink()); musicSet.add(tmp); }
+       */
+
+      int count = 0;
+
+      StringBuffer resultSet = new StringBuffer();
+      resultSet.append("video");
+      for (String str : split(key)) {
+        for (Video video : VideoTable.fuzzySearchByTitle(str)) {
+          if (resultSet.toString().contains(video.getLink())) {
+            continue;
+          }
+          resultSet.append("," + video.getTitle());
+          resultSet.append("," + video.getLink());
+          count++;
+          if (count > 20) {
+            count = 0;
+            break;
+          }
+        }
+      }
+      resultSet.append(",music");
+      for (String str : split(key)) {
+        for (Music music : MusicTable.fuzzySearchByTitle(str)) {
+          if (resultSet.toString().contains(music.getLink())) {
+            continue;
+          }
+          resultSet.append("," + music.getTitle());
+          resultSet.append("," + music.getLink());
+          count++;
+          if (count > 20) {
+            count = 0;
+            break;
+          }
+        }
+      }
+
+      byte[] jsonBytes = resultSet.toString().getBytes("utf-8");
+      response.setContentLength(jsonBytes.length);
+      response.getOutputStream().write(jsonBytes);
+      response.getOutputStream().flush();
+      response.getOutputStream().close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void getMusicSet() {
+    try {
       this.response.setContentType("text/json;charset=utf-8");
       this.response.setCharacterEncoding("UTF-8");
 
@@ -132,11 +280,6 @@ public class SourceHelper extends ActionSupport
 
   public void getVideoSet() {
     try {
-      /*
-       * 如果不采用接口注入的方式的获取HttpServletRequest，HttpServletResponse的方式 HttpServletRequest
-       * request=ServletActionContext.getRequest(); HttpServletResponse
-       * response=ServletActionContext.getResponse();
-       */
       this.response.setContentType("text/json;charset=utf-8");
       this.response.setCharacterEncoding("UTF-8");
 
@@ -162,13 +305,8 @@ public class SourceHelper extends ActionSupport
     }
   }
 
-  public void deleteMusic(String musicTitle) {
+  public void deleteMusic() {
     try {
-      /*
-       * 如果不采用接口注入的方式的获取HttpServletRequest，HttpServletResponse的方式 HttpServletRequest
-       * request=ServletActionContext.getRequest(); HttpServletResponse
-       * response=ServletActionContext.getResponse();
-       */
       this.response.setContentType("text/json;charset=utf-8");
       this.response.setCharacterEncoding("UTF-8");
       JSONObject json = new JSONObject();
@@ -185,13 +323,8 @@ public class SourceHelper extends ActionSupport
     }
   }
 
-  public void deleteVideo(String videoTitle) {
+  public void deleteVideo() {
     try {
-      /*
-       * 如果不采用接口注入的方式的获取HttpServletRequest，HttpServletResponse的方式 HttpServletRequest
-       * request=ServletActionContext.getRequest(); HttpServletResponse
-       * response=ServletActionContext.getResponse();
-       */
       this.response.setContentType("text/json;charset=utf-8");
       this.response.setCharacterEncoding("UTF-8");
       JSONObject json = new JSONObject();
@@ -208,13 +341,4 @@ public class SourceHelper extends ActionSupport
     }
   }
 
-  public static void main(String args[]) {
-    List<String> musicSet = new ArrayList<String>();
-    for (Music music : MusicTable.getMusicSet()) {
-      musicSet.add(music.getTitle());
-      musicSet.add(music.getLink());
-    }
-
-    System.out.println(musicSet.toString());
-  }
 }

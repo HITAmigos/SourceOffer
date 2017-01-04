@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import MySQL.hibernate.HibernateUtil;
+import MySQL.hibernate.Music;
 import MySQL.hibernate.Video;
 
 public class VideoTable extends Table {
@@ -20,7 +21,7 @@ public class VideoTable extends Table {
     List<Video> videoSet = null;
     try {
       tran = session.beginTransaction();
-      videoSet = session.createQuery("FROM video").list();
+      videoSet = session.createQuery("FROM Video").list();
     } catch (HibernateException e) {
       System.out.println("getVideoSet");
       if (tran != null) {
@@ -33,13 +34,34 @@ public class VideoTable extends Table {
     return videoSet;
   }
 
+  public static long getVideoCount() {
+    long count = 0;
+
+    Session session = HibernateUtil.currentSession();
+    Transaction tran = null;
+    String hql = "select count(*) from Video v";
+    try {
+      tran = session.beginTransaction();
+      count = (long) session.createQuery(hql).uniqueResult();
+    } catch (HibernateException e) {
+      System.out.println("getVideoCount");
+      if (tran != null) {
+        tran.rollback();
+      }
+      e.printStackTrace();
+    } finally {
+      HibernateUtil.closeSession();
+    }
+    return count;
+  }
+
   public static List<Video> getVideo(String videoTitle) {
     Session session = HibernateUtil.currentSession();
     Transaction tran = null;
     List<Video> videoSet = new ArrayList<Video>();
     try {
       tran = session.beginTransaction();
-      List<Video> allVideo = session.createQuery("FROM video").list();
+      List<Video> allVideo = session.createQuery("FROM Video").list();
       Video tmp = null;
       for (Iterator<Video> iterator = allVideo.iterator(); iterator.hasNext();) {
         tmp = (Video) iterator.next();
@@ -64,7 +86,7 @@ public class VideoTable extends Table {
     Transaction tran = null;
 
     List<Video> videoSet = null;
-    String sql = "from video as v where v.title like `%" + key + "%`";
+    String sql = "from Video as v where v.title like '%" + key + "%'";
 
     try {
       tran = session.beginTransaction();
@@ -136,4 +158,12 @@ public class VideoTable extends Table {
     return result;
   }
 
+  public static boolean isExist(String videoTitle) {
+    if (getVideo(videoTitle).size() == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  
 }

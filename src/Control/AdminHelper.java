@@ -122,7 +122,7 @@ public class AdminHelper extends ActionSupport
    * @param password
    * @return
    */
-  public void addAdmin(String adminname, String password) {
+  public void addAdmin() {
     try {
       /*
        * 如果不采用接口注入的方式的获取HttpServletRequest，HttpServletResponse的方式 HttpServletRequest
@@ -161,7 +161,7 @@ public class AdminHelper extends ActionSupport
    * @param password
    * @return
    */
-  public void changePassword(String adminname, String password) {
+  public void changePassword() {
     try {
       /*
        * 如果不采用接口注入的方式的获取HttpServletRequest，HttpServletResponse的方式 HttpServletRequest
@@ -194,7 +194,9 @@ public class AdminHelper extends ActionSupport
 
   public static void main(String args[]) {
     AdminHelper a = new AdminHelper();
-    a.addAdmin("lyx", "882776");
+    a.setAdminname("lyx");
+    a.setPassword("882776");
+    a.addAdmin();
   }
 
 }

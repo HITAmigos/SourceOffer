@@ -1,7 +1,6 @@
 package Control;
 
 import java.text.SimpleDateFormat;
-
 import assistant.BeijingTime;
 
 public class Timer {

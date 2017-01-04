@@ -29,6 +29,27 @@ public class AdminTable extends Table {
     }
     return adminSet;
   }
+  
+  public static long getAdminCount() {
+    long count = 0;
+
+    Session session = HibernateUtil.currentSession();
+    Transaction tran = null;
+    String hql = "select count(*) from Admin a";
+    try {
+      tran = session.beginTransaction();
+      count = (long) session.createQuery(hql).uniqueResult();
+    } catch (HibernateException e) {
+      System.out.println("getAdminCount");
+      if (tran != null) {
+        tran.rollback();
+      }
+      e.printStackTrace();
+    } finally {
+      HibernateUtil.closeSession();
+    }
+    return count;
+  }
 
   public static Admin getAdmin(String adminname) {
     List<Admin> AdminSet = getAdminSet();

@@ -16,10 +16,10 @@ public class MusicTable extends Table {
   public static List<Music> getMusicSet() {
     Session session = HibernateUtil.currentSession();
     Transaction tran = null;
-    List<Music> v = null;
+    List<Music> musicSet = null;
     try {
       tran = session.beginTransaction();
-      v = session.createQuery("FROM music").list();
+      musicSet = session.createQuery("FROM Music").list();
     } catch (HibernateException e) {
       System.out.println("getMusicSet");
       if (tran != null) {
@@ -29,7 +29,28 @@ public class MusicTable extends Table {
     } finally {
       HibernateUtil.closeSession();
     }
-    return v;
+    return musicSet;
+  }
+
+  public static long getMusicCount() {
+    long count = 0;
+
+    Session session = HibernateUtil.currentSession();
+    Transaction tran = null;
+    String hql = "select count(*) from Music m";
+    try {
+      tran = session.beginTransaction();
+      count = (long) session.createQuery(hql).uniqueResult();
+    } catch (HibernateException e) {
+      System.out.println("getMusicCount");
+      if (tran != null) {
+        tran.rollback();
+      }
+      e.printStackTrace();
+    } finally {
+      HibernateUtil.closeSession();
+    }
+    return count;
   }
 
   public static List<Music> getMusic(String musicTitle) {
@@ -63,7 +84,7 @@ public class MusicTable extends Table {
     Transaction tran = null;
 
     List<Music> musicSet = null;
-    String sql = "from music as m where m.title like `%" + key + "%`";
+    String sql = "from Music as m where m.title like '%" + key + "%'";
 
     try {
       tran = session.beginTransaction();
@@ -136,10 +157,11 @@ public class MusicTable extends Table {
   }
 
   public static boolean isExist(String musicTitle) {
-    if (getMusic(musicTitle).size()==0) {
+    if (getMusic(musicTitle).size() == 0) {
       return false;
     } else {
       return true;
     }
   }
+
 }

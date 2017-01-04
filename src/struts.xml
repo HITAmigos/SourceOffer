@@ -7,24 +7,60 @@
     <constant name="struts.devModel" value="true"/>
     <constant name="struts.i18n.encoding" value="UTF-8" />
 
-	<!--需要将struts-default改为-->
-    <package name="Control" namespace="/" extends="json-default">
-        <result-types>
-			<result-type name="json" class="org.apache.struts2.json.JSONResult"/>
-		</result-types>
+	<!-- 需要将struts-default改为 -->
+	<!-- 供客户端使用 -->
+    <package name="Control" namespace="/Client" extends="json-default">
         
-        <action name="login" class="Control.AdminHelper" method="login">
-            <!--返回值类型设置为json,不设置返回页面-->
+        <!-- Get Source -->
+        <action name="getAll" class="Control.SourceHelper" method="getAll">
             <result type="json"/>
+        </action>
+        
+        <action name="getMusic" class="Control.SourceHelper" method="getMusic">
+            <result type="json"/>
+        </action>
+        
+        <action name="getVideo" class="Control.SourceHelper" method="getVideo">
+            <result type="json"/>
+        </action>
+        
+    </package>
+    
+    <!-- 供浏览器使用 -->
+    <package name="Control2" namespace="/Client" extends="struts-default">
+        
+        <!-- Administrator Operations -->
+        <action name="login" class="Control.AdminHelper" method="login">
+            <result name="true">admin.jsp</result>
+            <result name="false">login.jsp</result>
         </action>
         
         <action name="addAdmin" class="Control.AdminHelper" method="addAdmin">
-            <result type="json"/>
+            <result name="true">admin.jsp</result>
+            <result name="false">error.jsp</result>
         </action>        
         
         <action name="changePassword" class="Control.AdminHelper" method="changePassword">
-            <result type="json"/>
+            <result name="true">admin.jsp</result>
+            <result name="false">error.jsp</result>
         </action>
         
-    </package>  
+        <!-- crawler service -->
+        <action name="crawlAll" class="Control.Crawl" method="crawlAll">
+            <result name="true">/admin.jsp</result>
+            <result name="false">/error.jsp</result>            
+        </action>
+        
+        <action name="crawlMusic" class="Control.Crawl" method="crawlMusic">
+            <result name="true">/admin.jsp</result>
+            <result name="false">/error.jsp</result>
+        </action>
+        
+        <action name="crawlVideo" class="Control.Crawl" method="crawlVideo">
+            <result name="true">/admin.jsp</result>
+            <result name="false">/error.jsp</result>
+        </action>
+        
+    </package>
+      
 </struts>  

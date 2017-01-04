@@ -8,7 +8,7 @@ public class SqlConst {
   private static int id = 0;
 
   private final String DB_URL =
-      "jdbc:mysql://localhost:3306/media?useUnicode=true&characterEncoding=utf8&&useSSL=false";
+      "jdbc:mysql://localhost:3306/source?useUnicode=true&characterEncoding=utf8&&useSSL=false";
   private final String NAME = "com.mysql.jdbc.Driver";
   private final String USER = "root";
   private final String PASS = "123456789";
