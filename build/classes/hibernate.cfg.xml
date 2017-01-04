@@ -5,19 +5,20 @@
 <session-factory >
 
 <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/media</property>
+<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/source</property>
 <property name="connectio.useUnicode">true</property>
 <property name="connection.characterEncoding">utf-8</property> 
 <property name="hibernate.connection.username">root</property>
-<property name="hibernate.connection.password">601939</property>
+<property name="hibernate.connection.password">123456789</property>
 
 <property name="hibernate.show_sql">true</property>
 <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 
-<property name="hibernate.hbm2ddl.auto">update</property>
-<mapping resource="entity/assistantEntity/SearchRecord.hbm.xml"/>
-<mapping resource="entity/assistantEntity/User.hbm.xml"/>
-<mapping resource="entity/assistantEntity/Comment.hbm.xml"/>
+<property name="hibernate.hbm2ddl.auto">create</property>
+<mapping resource="MySQL/hibernate/Admin.hbm.xml"/>
+<mapping resource="MySQL/hibernate/Video.hbm.xml"/>
+<mapping resource="MySQL/hibernate/Music.hbm.xml"/>
+<mapping resource="MySQL/hibernate/SearchRecord.hbm.xml"/>
 
 </session-factory>
 </hibernate-configuration>
